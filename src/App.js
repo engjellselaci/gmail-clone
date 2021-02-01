@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -8,27 +8,53 @@ import SendMail from "./SendMail";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import { selectSendMessageIsOpen } from "./features/mailSlice";
+import { selectUser } from "./features/userSlice";
+import Login from "./Login";
+import { auth } from "./firebase";
+import { useDispatch } from "react-redux";
+import login from "./features/userSlice";
+
 function App() {
   const sendMessageIsOpen = useSelector(selectSendMessageIsOpen);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        dispatch(
+          login({
+            displayName: user.displayName,
+            email: user.email,
+            photoUrl: user.photoURL,
+          })
+        );
+      }
+    });
+  }, []);
   return (
     <Router>
       {" "}
-      <div className="app">
-        <Header />
+      {!user ? (
+        <Login />
+      ) : (
+        <div className="app">
+          <Header />
 
-        <div className="app_body">
-          <Sidebar />
-          <Switch>
-            <Route path="/mail">
-              <Mail />
-            </Route>
-            <Route path="/">
-              <EmailList />
-            </Route>
-          </Switch>
+          <div className="app_body">
+            <Sidebar />
+            <Switch>
+              <Route path="/mail">
+                <Mail />
+              </Route>
+              <Route path="/">
+                <EmailList />
+              </Route>
+            </Switch>
+          </div>
+          {sendMessageIsOpen && <SendMail />}
         </div>
-        {sendMessageIsOpen && <SendMail />}
-      </div>
+      )}
     </Router>
   );
 }

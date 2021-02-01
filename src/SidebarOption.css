@@ -29,7 +29,7 @@
 .sidebarOption--active > h3 {
   background-color: #fcecec;
   color: #c04b37;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
 }
 .sidebarOption:hover > p {
   display: inline;
