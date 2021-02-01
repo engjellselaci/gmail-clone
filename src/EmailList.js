@@ -19,7 +19,7 @@ function EmailList() {
 
   useEffect(() => {
     db.collection("emails")
-      .orderBy("timestampt", "desc")
+      .orderBy("timestamp", "desc")
       //prettier-ignore
       .onSnapshot((snapshot) =>
         setEmails(
@@ -67,7 +67,7 @@ function EmailList() {
         <Section Icon={LocalOfferIcon} title="Promotions" color="green" />
       </div>
       <div className="emailList_list">
-        {emails.map(({ id, data: { to, subject, message, timestampt } }) => (
+        {emails.map(({ id, data: { to, subject, message, timestamp } }) => (
           <EmailRow
             id={id}
             key={id}
@@ -75,7 +75,7 @@ function EmailList() {
             subject={subject}
             description={message}
             //prettier-ignore
-            time={new Date(timestampt?.seconds * 1000).toUTCString()}
+            time={new Date(timestamp?.seconds * 1000).toUTCString()}
           />
         ))}
       </div>
